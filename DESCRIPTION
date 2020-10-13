@@ -1,0 +1,28 @@
+Package: impmort
+Title: Import Free Access Data For Mortality Modelling
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Guillaume",
+           family = "Biessy",
+           role = c("aut", "cre"),
+           email = "guillaume.biessy78@gmail.com",
+           comment = c(ORCID = "0000-0003-3756-7345"))
+Description: This package provides commands to automatically import mortality
+    data from available online sources such as HMD or the French regional data.
+    It is really easy to use all you need is to register on the HMD website and
+    supply your username and password, as well as the countries you are 
+    interested in, to the algorithm.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat
+Imports: 
+    dplyr,
+    tidyr,
+    tibble,
+    purrr,
+    RCurl,
+    forcats
