@@ -15,7 +15,7 @@ NULL
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines
 ## and data.table
 if (getRversion() >= "4.0")  {
-  gv <- c(".", "Country", "Total", "Age", "Gender", "Region", "Year", "dx", "Lx")
+  gv <- c(".", "Country", "Total", "Age", "Gender", "Region", "Year")
   utils::globalVariables(gv)
 }
 

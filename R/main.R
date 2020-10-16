@@ -177,8 +177,6 @@ tidy_FRD_data <- function(data) {
 
   data <- data %>%
     tibble %>%
-    select(Year, Age, dx, Lx) %>%
-    rename(E = Lx, D = dx) %>%
     mutate(Age = ifelse(Age == "105+", 105, Age) %>% as.integer)
 
   return(data)
