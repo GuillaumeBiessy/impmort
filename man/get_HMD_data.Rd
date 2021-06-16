@@ -4,11 +4,11 @@
 \alias{get_HMD_data}
 \title{Download HMD data}
 \usage{
-get_HMD_data(countries, username, password)
+get_HMD_data(countries = NULL, username, password)
 }
 \arguments{
-\item{countries}{A vector of country names. Names, if provided will be used
-as Country IDs in the returned tibble.}
+\item{countries}{A vector of country names or codes. If empty all data will
+be downloaded.}
 
 \item{username}{a valid HMD user name}
 
