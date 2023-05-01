@@ -15,8 +15,6 @@ Description: This package provides commands to automatically import mortality
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
 Imports: 
     dplyr,
     tidyr,
@@ -28,3 +26,4 @@ Imports:
     stringr
 Suggests: 
     testthat,
+RoxygenNote: 7.2.3

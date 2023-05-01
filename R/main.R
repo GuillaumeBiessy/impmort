@@ -2,15 +2,15 @@
 
 read_HMD_data <- function(what, country, username, password, verbose = TRUE) {
 
-  path <- paste0("https://www.mortality.org/hmd/", country, "/STATS/", what, "_1x1.txt")
-  userpwd <- paste(username, ":", password, sep = "")
+  path <- paste0("https://former.mortality.org/hmd/", country, "/STATS/", what, "_1x1.txt")
+  userpwd <- paste(username, password, sep = ":")
   txt <- RCurl::getURL(path, userpwd = userpwd)
   con <- textConnection(txt)
   data <- try(utils::read.table(con, skip = 2, header = TRUE, na.strings = ".",
-                                stringsAsFactors = F), TRUE)
+                                stringsAsFactors = FALSE), TRUE)
   close(con)
   if(verbose) cat("Retrieving", what, "data for country:", country, "\n")
-  if(class(data) == "try-error") stop("Connection error at www.mortality.org.
+  if(inherits(data, "try-error")) stop("Connection error at www.mortality.org.
                                    Please check username, password and country label.")
   return(data)
 }
@@ -21,8 +21,8 @@ tidy_HMD_data <- function(data, what) {
     tibble() |>
     select(- Total) |>
     tidyr::pivot_longer(cols = c("Male", "Female"),
-                 names_to = "Gender",
-                 values_to = what) |>
+                        names_to = "Gender",
+                        values_to = what) |>
     mutate(Age = ifelse(Age == "110+", 110, Age) |> as.integer(),
            Gender = Gender |> forcats::fct_inorder(),
            "{what}" := as.numeric(.data[[what]]))
@@ -30,10 +30,10 @@ tidy_HMD_data <- function(data, what) {
   return(data)
 }
 
-read_HMD_data2 <- function(countries, username, password) {
+read_HMD_data2 <- function(country, username, password) {
 
   out <- list(E = "Exposures", D = "Deaths") |>
-    map(read_HMD_data, countries, username, password) |>
+    map(read_HMD_data, country, username, password) |>
     imap(tidy_HMD_data) |>
     reduce(left_join)
 
@@ -46,17 +46,17 @@ read_HMD_data2 <- function(countries, username, password) {
 #' @export
 get_HMD_countries <- function() {
 
-  countries <- "https://www.mortality.org/cgi-bin/hmd/DataAvailability.php" |>
+  countries <- "https://www.mortality.org/Data/DataAvailability" |>
     rvest::read_html() |>
     rvest::html_nodes("table") |>
-    (\(x) x[[2]])() |>
+    (\(x) x[[1]])() |>
     rvest::html_table(header = TRUE, na.strings = "-")
 
   colnames(countries)[1:3] <- c("Country", "Code", "Period")
 
   countries <- countries |>
     dplyr::mutate(Period_start = substr(Period,1,4) |> as.integer(),
-                  Period_end = substr(Period,6,9) |> as.integer(),
+                  Period_end = substr(Period,8,11) |> as.integer(),
                   .before = 4) |>
     (\(x) x[,1:5])()
 
@@ -130,13 +130,13 @@ get_HMD_data <- function(countries = NULL, username, password) {
 #' @export
 get_STMF_data <- function(username, password) {
 
-  path <- "https://www.mortality.org/Public/STMF/Outputs/stmf.csv"
+  path <- "https://former.mortality.org/Public/STMF/Outputs/stmf.csv"
   userpwd <- paste(username, ":", password, sep = "")
   txt <- RCurl::getURL(path, userpwd = userpwd)
   con <- textConnection(txt)
   data <- try(utils::read.csv(con, skip = 2), TRUE)
   close(con)
-  if(class(data) == "try-error") stop("Connection error at www.mortality.org.
+  if(inherits(data, "try-error")) stop("Connection error at www.mortality.org.
                                    Please check username, and password.")
 
   data <- data |>
